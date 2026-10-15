@@ -631,7 +631,9 @@
   /* ---------- Variant sheet (quick add) ---------- */
   function toastAdded(p, line) {
     if (line && line.added < line.requested) {
-      toast(line.added ? `נוספו ${line.added} יחידות בלבד` : 'הכמות המרבית כבר בסל', {
+      const msg = !line.added ? 'הכמות המרבית כבר בסל'
+        : line.added === 1 ? 'נוספה יחידה אחת בלבד' : `נוספו ${line.added} יחידות בלבד`;
+      toast(msg, {
         icon: 'info',
         subtitle: `אפשר עד ${L.cart.MAX_QTY} יחידות מכל פריט`,
         action: { label: 'לסל', onClick: () => L.router?.go('#/bag') },
@@ -757,18 +759,36 @@
           type: 'button', class: 'pcard-dot', role: 'radio', 'data-id': id,
           'aria-label': s.name, title: s.name,
           'aria-checked': id === shade ? 'true' : 'false',
+          tabindex: id === shade ? '0' : '-1',
           onClick: (e) => {
             e.preventDefault();
             e.stopPropagation();
-            if (shade === id) return;
-            shade = id;
-            L.$$('.pcard-dot', dots).forEach((d) => d.setAttribute('aria-checked', d.dataset.id === id ? 'true' : 'false'));
-            link.href = href();
-            setArt();
-            L.haptic(4);
+            pickDot(id);
           },
         }, h('span', { style: { background: swatchBg(id) } })));
       });
+      // Radio group = one tab stop; arrows move between shades (RTL aware).
+      dots.addEventListener('keydown', (e) => {
+        const rtl = getComputedStyle(dots).direction === 'rtl';
+        const step = { ArrowLeft: rtl ? 1 : -1, ArrowRight: rtl ? -1 : 1 }[e.key];
+        if (!step) return;
+        e.preventDefault();
+        const next = p.shades[L.clamp(p.shades.indexOf(shade) + step, 0, p.shades.length - 1)];
+        pickDot(next);
+        dots.querySelector(`[data-id="${next}"]`)?.focus();
+      });
+    }
+    function pickDot(id) {
+      if (shade === id) return;
+      shade = id;
+      L.$$('.pcard-dot', dots).forEach((d) => {
+        const on = d.dataset.id === id;
+        d.setAttribute('aria-checked', on ? 'true' : 'false');
+        d.tabIndex = on ? 0 : -1;
+      });
+      link.href = href();
+      setArt();
+      L.haptic(4);
     }
 
     const el = h('article', {
@@ -782,7 +802,11 @@
       h('div', { class: 'pcard-foot' },
         h('span', { class: 'pcard-price' }, priceText),
         dots)));
-    el.setShade = (id) => { if (p.shades?.includes(id)) { shade = id; link.href = href(); setArt(); } };
+    el.setShade = (id) => {
+      if (!p.shades?.includes(id)) return;
+      if (dots) { pickDot(id); return; }
+      shade = id; link.href = href(); setArt();
+    };
     return el;
   }
 

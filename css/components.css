@@ -587,7 +587,7 @@
   color: var(--accent);
 }
 .empty-title { font: 700 var(--t-title2) var(--font); }
-.empty-text { font: 400 var(--t-body) var(--font); color: var(--label-2); }
+.empty-text { font: 400 var(--t-body) var(--font); color: var(--label-2); text-wrap: balance; }
 .empty-action { margin-block-start: var(--s-4); }
 
 /* ---------- Art placeholder (when art.js is unavailable) ---------- */

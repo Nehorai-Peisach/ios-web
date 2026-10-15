@@ -102,7 +102,7 @@
   max-width: 640px;
   font: 500 1.1875rem/1.45 var(--font);
   color: var(--home-ink-2);
-  text-wrap: pretty;
+  text-wrap: balance;   /* short marketing lines: no one-word widows */
 }
 @media (min-width: 734px) {
   .h-title { font-size: 3rem; line-height: 1.08; }
@@ -563,7 +563,7 @@
 }
 .h-shade-text { display: flex; flex-direction: column; gap: 8px; min-height: 6.5em; }
 .h-shade-name { font: 800 2rem/1.1 var(--font); color: var(--home-ink); }
-.h-shade-line { font: 500 1.125rem/1.45 var(--font); color: var(--home-ink-2); max-width: 30ch; }
+.h-shade-line { font: 500 1.125rem/1.45 var(--font); color: var(--home-ink-2); max-width: 30ch; text-wrap: balance; }
 .h-shades .swatches-row { justify-content: center; gap: 6px; }
 .h-shades .swatch { width: 56px; height: 56px; }
 .h-shades .swatch-dot { width: 40px; height: 40px; }

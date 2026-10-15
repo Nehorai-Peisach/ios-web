@@ -241,6 +241,7 @@
     back: true,
     hideTabBar: true,
     parent: '#/bag',
+    remember: false,  // never the bag tab's remembered page
     render(ctx) {
       ctx.el.classList.add('on-grouped');
       const wrap = h('div', { class: 'container co' });
@@ -534,6 +535,7 @@
     route: '/done/:orderId',
     title: 'ההזמנה התקבלה',
     tab: 'bag',
+    remember: false,
     render(ctx) {
       const o = S().lastOrder.get();
       const wrap = h('div', { class: 'container done' });

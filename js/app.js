@@ -77,10 +77,18 @@
   const SETTINGS_KEY = 'luma.settings';
   const settings = Object.assign({ theme: 'auto', glassAlpha: null }, L.storage.get(SETTINGS_KEY, {}));
 
+  /** Browser chrome colour follows the in-app override, not only the system scheme. */
+  function syncThemeColor(theme) {
+    L.$$('meta[name="theme-color"]').forEach((m) => {
+      const dark = theme === 'dark' || (theme !== 'light' && /dark/.test(m.media));
+      m.setAttribute('content', dark ? '#000000' : '#FFFFFF');
+    });
+  }
   function applyTheme(theme, animate) {
     const apply = () => {
       if (theme === 'light' || theme === 'dark') root.dataset.theme = theme;
       else delete root.dataset.theme;
+      syncThemeColor(theme);
     };
     if (animate && document.startViewTransition && !L.reducedMotion()) {
       root.dataset.nav = 'theme';
@@ -209,6 +217,11 @@
     }
     return { def: notFoundDef, params: {} };
   }
+  /** Hashes compare decoded: '#/search?q=לבנדר' and its percent-encoded twin are the same page. */
+  const sameHash = (a, b) => {
+    const canon = (x) => { try { return decodeURI(String(x || '')); } catch { return String(x || ''); } };
+    return canon(a) === canon(b);
+  };
   const isAppHash = (hash) => !hash || hash === '#' || hash.startsWith('#/');
 
   function saveScroll() {
@@ -223,7 +236,7 @@
       navigate('none', { keepScroll: false, focus: true });
       return;
     }
-    if (hash === renderedHash) { scrollToTop(); return; }
+    if (sameHash(hash, renderedHash)) { scrollToTop(); return; }
     saveScroll();
     try {
       maxIdx += 1;
@@ -259,7 +272,7 @@
 
   function onPop(e) {
     if (!isAppHash(location.hash)) return;
-    if (location.hash === renderedHash) {
+    if (sameHash(location.hash, renderedHash)) {
       // Same URL re-entered (e.g. from the address bar): tag the new entry so back/forward can restore it.
       if (history.state?.lumaIdx == null) { try { history.replaceState({ lumaIdx: entryIdx }, ''); } catch { /* ignore */ } }
       return;
@@ -290,7 +303,11 @@
     return dir === 'back' ? 'back' : 'forward';
   }
 
+  let navSeq = 0;
   function navigate(dir, opts = {}) {
+    // Only the latest navigation may mount: a pending view-transition callback from an
+    // earlier one (two go() calls in one frame) must not overwrite it.
+    const seq = ++navSeq;
     const loc = parse();
     const next = { ...match(loc.path), query: loc.query, hash: loc.hash };
     const type = navType(current, next, dir);
@@ -300,6 +317,7 @@
     const prevDef = current?.def;
 
     const update = () => {
+      if (seq !== navSeq) return;
       mount(next);
       if (!keepScroll) window.scrollTo({ top: restoreY, left: 0, behavior: 'instant' });
       lastY = window.scrollY;
@@ -323,7 +341,7 @@
     try { vt = document.startViewTransition(update); } catch { update(); afterNav(focusType); return; }
     activeVT = vt;
     vt.ready.catch(() => {});
-    vt.updateCallbackDone.then(() => afterNav(type), () => {});
+    vt.updateCallbackDone.then(() => { if (seq === navSeq) afterNav(type); }, () => {});
     vt.finished.finally(() => {
       if (activeVT === vt) { activeVT = null; delete root.dataset.nav; }
       L.$$('[data-morph]').forEach((n) => { n.style.viewTransitionName = ''; delete n.dataset.morph; });
@@ -397,7 +415,8 @@
   function tabLastUpdate() {
     if (!current) return;
     const tab = current.def.tab;
-    if (tab && tabLast[tab] !== undefined) tabLast[tab] = renderedHash;
+    // Transient pages (checkout, order confirmation) are never where a tab tap should return to.
+    if (tab && tabLast[tab] !== undefined && current.def.remember !== false) tabLast[tab] = renderedHash;
   }
 
   function resolveTitle(def, params, query) {
@@ -510,6 +529,15 @@
     if (min === isMin) return;
     isMin = min;
     S.dock.classList.toggle('is-min', min);
+    syncDockA11y();
+  }
+  /** Collapsed tabs (minimized / search on phones) are invisible: hide them from focus and AT,
+      and expose the round "mini" button that stands in for them. */
+  function syncDockA11y() {
+    const collapsed = (isMin || searchMode) && !desktopMQ.matches;
+    S.track.inert = collapsed;
+    S.mini.tabIndex = collapsed ? 0 : -1;
+    S.mini.setAttribute('aria-hidden', collapsed ? 'false' : 'true');
   }
 
   function onScroll() {
@@ -564,8 +592,7 @@
     S.searchBtn.tabIndex = on ? -1 : 0;
     S.searchBtn.setAttribute('aria-hidden', on ? 'true' : 'false');
     S.searchInput.tabIndex = on ? 0 : -1;
-    S.mini.tabIndex = on ? 0 : -1;
-    S.mini.setAttribute('aria-hidden', on ? 'false' : 'true');
+    syncDockA11y();
     if (on) S.mini.setAttribute('aria-label', `סגירת החיפוש וחזרה ל${TABS.find((t) => t.id === lastTab)?.label || 'בית'}`);
     if (!on) { S.searchInput.blur(); searchView = null; }
     syncClear();
@@ -681,7 +708,7 @@
     window.addEventListener('resize', () => { placePill(); requestScroll(); });
     window.addEventListener('popstate', onPop);
     window.addEventListener('hashchange', () => onPop({ state: history.state }));
-    desktopMQ.addEventListener?.('change', () => { setMin(false); requestAnimationFrame(placePill); observeLargeTitle(); });
+    desktopMQ.addEventListener?.('change', () => { setMin(false); syncDockA11y(); requestAnimationFrame(placePill); observeLargeTitle(); });
     if ('ResizeObserver' in window) new ResizeObserver(placePill).observe(S.track);
     document.fonts?.ready?.then(placePill);
 
@@ -717,6 +744,7 @@
     if (booted) return;
     buildShell();
     applyGlass(settings.glassAlpha);
+    syncThemeColor(settings.theme);
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
     if (!isAppHash(location.hash) || !location.hash || location.hash === '#') {
