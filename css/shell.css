@@ -1,0 +1,585 @@
+/* ==========================================================================
+   LUMA — app shell: top bar, scroll edges, floating tab bar, search,
+   accessory, view container, route transitions, settings.
+   ========================================================================== */
+
+/* ---------- Space reserved for the dock (views pad by this) ---------- */
+:root.has-accessory { --tabbar-space: calc(var(--dock-bottom) + var(--tabbar-h) + 10px + var(--accessory-h) + var(--s-3)); }
+:root.no-tabbar { --tabbar-space: calc(var(--dock-bottom) + var(--s-3)); }
+:root.no-tabbar.has-accessory { --tabbar-space: calc(var(--dock-bottom) + var(--accessory-h) + var(--s-3)); }
+@media (min-width: 1068px) {
+  :root, :root.no-tabbar { --tabbar-space: calc(var(--safe-bottom) + var(--s-8)); }
+  :root.has-accessory, :root.no-tabbar.has-accessory { --tabbar-space: calc(var(--safe-bottom) + 24px + 60px + var(--s-6)); }
+}
+
+.skip-link {
+  position: fixed;
+  z-index: 300;
+  top: calc(var(--safe-top) + 8px);
+  inset-inline-start: 8px;
+  padding: 10px 16px;
+  border-radius: var(--r-pill);
+  background: var(--accent-fill);
+  color: #fff;
+  font: 600 var(--t-subhead) var(--font);
+  transform: translateY(-200%);
+}
+.skip-link:focus-visible { transform: none; }
+
+/* ---------- View container ---------- */
+#main { display: block; outline: none; view-transition-name: main; }
+.view {
+  min-height: 100dvh;
+  padding-block-start: var(--topbar-space);
+  padding-block-end: calc(var(--tabbar-space) + var(--s-6));
+}
+
+/* ---------- Scroll-edge effect (no hairlines) ---------- */
+.edge {
+  position: fixed;
+  z-index: 15;
+  inset-inline: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+.edge.is-on { opacity: 1; }
+.edge-top {
+  top: 0;
+  height: calc(var(--topbar-space) + 18px);
+  background: linear-gradient(color-mix(in srgb, var(--edge-color, var(--bg)) 82%, transparent) 0%, color-mix(in srgb, var(--edge-color, var(--bg)) 40%, transparent) 55%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  -webkit-mask-image: linear-gradient(#000 45%, transparent);
+          mask-image: linear-gradient(#000 45%, transparent);
+}
+.edge-bottom {
+  bottom: 0;
+  height: calc(var(--dock-bottom) + var(--tabbar-h) + 28px);
+  background: linear-gradient(transparent, color-mix(in srgb, var(--edge-color, var(--bg)) 55%, transparent));
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+  -webkit-mask-image: linear-gradient(transparent, #000 60%);
+          mask-image: linear-gradient(transparent, #000 60%);
+}
+:root.has-accessory .edge-bottom { height: calc(var(--dock-bottom) + var(--tabbar-h) + 10px + var(--accessory-h) + 28px); }
+:root.no-tabbar.has-accessory .edge-bottom { height: calc(var(--dock-bottom) + var(--accessory-h) + 28px); }
+:root.no-tabbar:not(.has-accessory) .edge-bottom { display: none; }
+@media (min-width: 1068px) {
+  .edge-bottom { display: none; }
+  :root.has-accessory .edge-bottom, :root.no-tabbar.has-accessory .edge-bottom { display: block; height: calc(var(--safe-bottom) + 110px); }
+}
+
+/* ---------- Top bar ---------- */
+.topbar {
+  position: fixed;
+  z-index: 20;
+  top: 0;
+  inset-inline: 0;
+  height: var(--topbar-space);
+  padding-block-start: var(--safe-top);
+  padding-inline: var(--gutter);
+  display: grid;
+  grid-template-columns: minmax(44px, 1fr) minmax(0, auto) minmax(44px, 1fr);
+  align-items: center;
+  gap: var(--s-2);
+  pointer-events: none;
+}
+.topbar-lead, .topbar-trail { display: flex; align-items: center; gap: var(--s-2); pointer-events: auto; }
+.topbar-lead { justify-self: start; }
+.topbar-trail { justify-self: end; }
+.topbar-lead:empty, .topbar-trail:empty { pointer-events: none; }
+.topbar-title {
+  min-width: 0;
+  max-width: 62vw;
+  text-align: center;
+  font: 600 var(--t-headline) var(--font);
+  color: var(--label);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .28s ease, transform var(--d-smooth) var(--spring-smooth);
+}
+.topbar.show-title .topbar-title { opacity: 1; transform: none; }
+.topbar-back[hidden] { display: none; }
+
+/* ---------- Dock: tab bar + search + accessory ---------- */
+.dock {
+  --dock-w: min(100vw - 2 * var(--gutter), 560px);
+  --gap: 12px;
+  --tb: var(--tabbar-h);
+  --sb: var(--tabbar-h);
+  position: fixed;
+  z-index: 30;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  bottom: calc(var(--dock-bottom) + var(--kb, 0px));
+  width: var(--dock-w);
+  height: var(--tabbar-h);
+  pointer-events: none;
+  transition: bottom .3s var(--ease-out);
+}
+.dock > * { pointer-events: auto; position: absolute; bottom: 0; }
+
+.tabbar, .searchbox, .dock-accessory {
+  transition:
+    width var(--d-smooth) var(--spring-smooth),
+    height var(--d-smooth) var(--spring-smooth),
+    bottom var(--d-smooth) var(--spring-smooth),
+    inset-inline-start var(--d-smooth) var(--spring-smooth),
+    transform var(--d-smooth) var(--spring-smooth),
+    opacity .3s ease;
+}
+
+/* Tab bar capsule */
+.tabbar {
+  inset-inline-start: 0;
+  width: calc(100% - var(--sb) - var(--gap));
+  height: var(--tb);
+  border-radius: var(--r-pill);
+  overflow: clip;
+}
+.tabbar-track {
+  position: absolute;
+  z-index: 3;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: calc(var(--dock-w) - var(--tabbar-h) - var(--gap));
+  display: flex;
+  padding: 4px;
+  transition: opacity .22s ease, transform var(--d-smooth) var(--spring-smooth);
+}
+.tabbar-pill {
+  position: absolute;
+  z-index: 0;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  width: var(--pill-w, 0px);
+  transform: translateX(var(--pill-x, 0px));
+  border-radius: var(--r-pill);
+  background: var(--glass-pill);
+  opacity: 0;
+}
+.tabbar-track.has-active .tabbar-pill { opacity: 1; }
+.tabbar-track.is-ready .tabbar-pill {
+  transition: transform var(--d-snappy) var(--spring-snappy), width var(--d-snappy) var(--spring-snappy), opacity .2s ease;
+}
+.tab {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  border-radius: var(--r-pill);
+  color: var(--label);
+  text-decoration: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.tab:focus-visible { outline-offset: -2px; }
+.tab-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  transition: transform .45s var(--spring-bouncy);
+}
+.tab-icon svg { grid-area: 1 / 1; width: 26px; height: 26px; transition: opacity .2s ease; }
+.tab-icon .icon--filled { opacity: 0; }
+.tab.is-active .tab-icon { color: var(--accent); }
+.tab.is-active .tab-icon .icon--filled { opacity: 1; }
+.tab.is-active .tab-icon svg:not(.icon--filled) { opacity: 0; }
+.tab:active .tab-icon { transform: scale(.86); transition-duration: .15s; }
+.tab.is-bump .tab-icon { animation: tab-bump .6s var(--spring-bouncy); }
+@keyframes tab-bump { 30% { transform: scale(1.22) rotate(-6deg); } }
+.tab-label {
+  font: 600 .6875rem/1.1 var(--font);
+  color: var(--label);
+  white-space: nowrap;
+}
+.tab-badge {
+  position: absolute;
+  top: -4px;
+  inset-inline-start: 17px;
+  min-width: 18px;
+  height: 18px;
+  padding-inline: 5px;
+  border-radius: var(--r-pill);
+  background: var(--red);
+  color: #fff;
+  font: 700 .6875rem/18px var(--font-num);
+  text-align: center;
+  box-shadow: 0 0 0 2px rgb(var(--glass-fill) / .6);
+  animation: badge-in .5s var(--spring-bouncy);
+}
+@keyframes badge-in { from { transform: scale(.3); opacity: 0; } }
+
+.tabbar-mini {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--accent);
+  opacity: 0;
+  transform: scale(.5);
+  pointer-events: none;
+  transition: opacity .25s ease, transform var(--d-bouncy) var(--spring-bouncy);
+}
+
+/* Search: glass circle → field */
+.searchbox {
+  inset-inline-end: 0;
+  width: var(--sb);
+  height: var(--tb);
+  border-radius: var(--r-pill);
+  overflow: clip;
+}
+.searchbox-btn {
+  position: absolute;
+  z-index: 3;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-pill);
+  color: var(--label);
+  transition: opacity .2s ease, transform .4s var(--spring-snappy);
+}
+.searchbox-btn:active { transform: scale(.9); }
+.searchbox-glyph {
+  position: absolute;
+  z-index: 3;
+  inset-block: 0;
+  inset-inline-start: 14px;
+  display: grid;
+  place-items: center;
+  color: var(--label-2);
+  opacity: 0;
+  transform: scale(.6);
+  transition: opacity .25s ease, transform var(--d-bouncy) var(--spring-bouncy);
+  pointer-events: none;
+}
+.searchbox-input {
+  position: absolute;
+  z-index: 3;
+  inset-block: 0;
+  inset-inline-start: 44px;
+  inset-inline-end: 40px;
+  width: auto;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  outline: none;
+  color: var(--label);
+  font: 400 max(1rem, 16px) / 1.2 var(--font);
+  font-size: 1.0625rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.searchbox-input::placeholder { color: var(--label-2); }
+.searchbox-clear {
+  position: absolute;
+  z-index: 3;
+  inset-block: 0;
+  inset-inline-end: 4px;
+  width: 40px;
+  display: grid;
+  place-items: center;
+  color: var(--label-2);
+  --icon-knock: rgb(var(--glass-fill));
+}
+.searchbox:has(.searchbox-btn:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Grouped-background views (e.g. checkout) tint the page edges too. */
+html:has(.view.on-grouped), html:has(.view.on-grouped) body { background: var(--bg-grouped); }
+html:has(.view.on-grouped) { --edge-color: var(--bg-grouped); }
+
+/* Accessory capsule — more opaque than other glass: it carries price text over busy content */
+.dock-accessory.glass { background: rgb(var(--glass-fill) / max(var(--glass-alpha), .62)); }
+.dock-accessory {
+  inset-inline-start: 0;
+  bottom: calc(var(--tb) + 10px);
+  width: 100%;
+  height: var(--accessory-h);
+  padding: 4px;
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  border-radius: var(--r-pill);
+  opacity: 0;
+  transform: translateY(16px) scale(.94);
+  visibility: hidden;
+  transition:
+    width var(--d-smooth) var(--spring-smooth),
+    height var(--d-smooth) var(--spring-smooth),
+    bottom var(--d-smooth) var(--spring-smooth),
+    inset-inline-start var(--d-smooth) var(--spring-smooth),
+    transform var(--d-smooth) var(--spring-smooth),
+    opacity .3s ease,
+    visibility 0s linear .35s;
+}
+.dock.has-accessory .dock-accessory {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  transition-delay: 0s;
+}
+.dock-accessory > * { position: relative; z-index: 3; flex: 1 1 auto; min-width: 0; }
+.dock-accessory > .btn, .dock-accessory .btn { min-height: 0; height: 100%; }
+.dock.has-accessory { height: calc(var(--tabbar-h) + 10px + var(--accessory-h)); }
+
+/* Minimized (scrolling down) */
+.dock.is-min { --tb: var(--tabbar-min-h); --sb: var(--tabbar-min-h); }
+.dock.is-min .tabbar { width: var(--tabbar-min-h); }
+.dock.is-min .tabbar-track { opacity: 0; pointer-events: none; transform: scale(.9); }
+.dock.is-min .tabbar-mini, .dock.is-search .tabbar-mini { opacity: 1; transform: none; pointer-events: auto; }
+.dock.is-min .dock-accessory {
+  bottom: 0;
+  inset-inline-start: calc(var(--tabbar-min-h) + 10px);
+  width: calc(100% - 2 * var(--tabbar-min-h) - 20px);
+  height: var(--tabbar-min-h);
+}
+
+/* Search mode: tabs collapse to a circle, search expands */
+.dock.is-search { --tb: var(--tabbar-min-h); --sb: var(--tabbar-min-h); }
+.dock.is-search .tabbar { width: var(--tabbar-min-h); }
+.dock.is-search .tabbar-track { opacity: 0; pointer-events: none; transform: scale(.9); }
+.dock.is-search .searchbox { width: calc(100% - var(--tabbar-min-h) - 10px); }
+.dock.is-search .searchbox-btn { opacity: 0; pointer-events: none; transform: scale(.6); }
+.dock.is-search .searchbox-glyph { opacity: 1; transform: none; }
+.dock.is-search .searchbox-input { opacity: 1; pointer-events: auto; }
+.dock.is-search .dock-accessory { opacity: 0; visibility: hidden; }
+
+/* Hidden tab bar (e.g. checkout): accessory drops to the bottom */
+.dock.no-tabbar .tabbar, .dock.no-tabbar .searchbox {
+  opacity: 0;
+  transform: translateY(calc(100% + 40px));
+  pointer-events: none;
+}
+.dock.no-tabbar .dock-accessory { bottom: 0; inset-inline-start: 0; width: 100%; height: var(--accessory-h); }
+.dock.no-tabbar.has-accessory { height: var(--accessory-h); }
+
+/* ---------- Desktop (≥1068): tab bar floats top-center (iPadOS 26) ---------- */
+@media (min-width: 1068px) {
+  .dock, .dock.has-accessory, .dock.is-min, .dock.is-search {
+    --tb: 52px;
+    --sb: 52px;
+    --tw: 330px;
+    top: calc(var(--safe-top) + (var(--topbar-h) - 52px) / 2);
+    bottom: auto;
+    width: calc(var(--tw) + 10px + var(--sb));
+    height: 52px;
+    transition: width var(--d-smooth) var(--spring-smooth);
+  }
+  .dock.is-search { --sb: 300px; }
+  .dock .tabbar, .dock.is-min .tabbar, .dock.is-search .tabbar { width: var(--tw); height: 52px; }
+  .dock .tabbar-track, .dock.is-min .tabbar-track, .dock.is-search .tabbar-track {
+    width: 100%;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+  .dock .tabbar-mini, .dock.is-search .tabbar-mini { display: none; }
+  .tab { flex-direction: row; gap: 6px; }
+  .tab-icon { width: 22px; height: 22px; }
+  .tab-icon svg { width: 20px; height: 20px; }
+  .tab-label { font: 600 var(--t-subhead) var(--font); }
+  .tab.is-active .tab-label { color: var(--accent); }
+  .tab-badge { top: -6px; inset-inline-start: 12px; }
+  .searchbox, .dock.is-min .searchbox, .dock.is-search .searchbox { width: var(--sb); height: 52px; }
+  .dock.no-tabbar .tabbar, .dock.no-tabbar .searchbox { transform: translateY(-40px); }
+
+  .dock-accessory,
+  .dock.is-min .dock-accessory,
+  .dock.no-tabbar .dock-accessory {
+    position: fixed;
+    top: auto;
+    bottom: calc(var(--safe-bottom) + 24px);
+    left: 0;
+    right: 0;
+    inset-inline-start: 0;
+    margin-inline: auto;
+    width: min(440px, 100vw - 64px);
+    height: 60px;
+    padding: 5px;
+  }
+
+  .topbar-title { visibility: hidden; }
+}
+
+/* ---------- Route transitions (View Transitions API) ---------- */
+/* Bars are named only while a transition runs: a view-transition-name makes an element a
+   backdrop root, which would stop every glass control inside it from blurring the page. */
+html[data-nav] .topbar { view-transition-name: topbar; }
+html[data-nav] .dock { view-transition-name: dock; }
+html[data-nav] .edge-top { view-transition-name: edge-top; }
+::view-transition-group(*) {
+  animation-duration: .52s;
+  animation-timing-function: var(--spring-smooth);
+}
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .25s; }
+::view-transition-group(topbar), ::view-transition-group(dock), ::view-transition-group(edge-top) { animation-duration: .3s; }
+/* The dock stays live: its own CSS springs (pill, accessory) play through the transition. */
+::view-transition-old(dock) { display: none; }
+::view-transition-new(dock) { animation: none; }
+::view-transition-group(dock) { animation: none; }
+::view-transition-old(topbar), ::view-transition-new(topbar) { animation-duration: .22s; }
+
+/* Push (RTL: the new page enters from the left) */
+html[data-nav="forward"]::view-transition-old(main) { animation: vt-push-old .5s var(--spring-smooth) both; }
+html[data-nav="forward"]::view-transition-new(main) { animation: vt-push-new .5s var(--spring-smooth) both; }
+html[data-nav="back"]::view-transition-old(main) { animation: vt-pop-old .46s var(--spring-smooth) both; }
+html[data-nav="back"]::view-transition-new(main) { animation: vt-pop-new .46s var(--spring-smooth) both; }
+html[data-nav="tab"]::view-transition-old(main), html[data-nav="fade"]::view-transition-old(main) { animation: vt-fade-out .18s ease both; }
+html[data-nav="tab"]::view-transition-new(main), html[data-nav="fade"]::view-transition-new(main) { animation: vt-fade-in .34s var(--ease-out) .04s both; }
+
+@keyframes vt-push-old { to { transform: translateX(22%); opacity: 0; } }
+@keyframes vt-push-new { from { transform: translateX(-34%); opacity: 0; } }
+@keyframes vt-pop-old  { to { transform: translateX(-30%); opacity: 0; } }
+@keyframes vt-pop-new  { from { transform: translateX(20%); opacity: 0; } }
+@keyframes vt-fade-out { to { opacity: 0; } }
+@keyframes vt-fade-in { from { opacity: 0; transform: translateY(6px); } }
+
+html[data-nav="theme"]::view-transition-old(*),
+html[data-nav="theme"]::view-transition-new(*) { animation-duration: .4s; animation-timing-function: ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}
+
+/* ---------- Search view ---------- */
+.search-view { display: flex; flex-direction: column; }
+.search-block { display: flex; flex-direction: column; }
+.search-heading { margin-block: var(--s-2) var(--s-3); font: 700 var(--t-title3) var(--font); }
+.search-heading:not(:first-child) { margin-block-start: var(--s-8); }
+.search-suggest { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.search-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding-inline: 14px 16px;
+  border-radius: var(--r-pill);
+  background: var(--fill-3);
+  color: var(--label);
+  font: 500 var(--t-callout) var(--font);
+  transition: transform .35s var(--spring-snappy), background-color .2s;
+}
+.search-chip svg { color: var(--label-2); }
+.search-chip:active { transform: scale(.95); background: var(--fill); }
+.search-count { margin-block-end: var(--s-3); font: 400 var(--t-footnote) var(--font); color: var(--label-2); }
+.search-results .pcard { animation: card-in .5s var(--spring-smooth) both; }
+.search-results .pcard:nth-child(2) { animation-delay: .03s; }
+.search-results .pcard:nth-child(3) { animation-delay: .06s; }
+.search-results .pcard:nth-child(4) { animation-delay: .09s; }
+.search-results .pcard:nth-child(n+5) { animation-delay: .12s; }
+@keyframes card-in { from { opacity: 0; transform: translateY(10px) scale(.98); } }
+
+/* ---------- Settings sheet ---------- */
+.settings { display: flex; flex-direction: column; gap: var(--s-6); }
+.settings-group .glist-header { padding-inline: var(--s-4); }
+.settings-card { padding: var(--s-3); display: flex; flex-direction: column; gap: var(--s-4); }
+.settings-slider { display: flex; align-items: center; gap: var(--s-3); padding-inline: var(--s-1); }
+.settings-slider-end { flex: none; font: 400 var(--t-footnote) var(--font); color: var(--label-2); }
+.settings-reset { display: flex; justify-content: center; margin-block-start: var(--s-2); }
+
+.glass-range {
+  --p: 50%;
+  flex: 1;
+  height: 44px;
+  margin: 0;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+.glass-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to left, var(--accent) var(--p), var(--fill) var(--p));
+}
+:root[dir="ltr"] .glass-range::-webkit-slider-runnable-track { background: linear-gradient(to right, var(--accent) var(--p), var(--fill) var(--p)); }
+.glass-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 30px;
+  height: 30px;
+  margin-top: -12px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 8px rgb(0 0 0 / .2), 0 0 0 .5px rgb(0 0 0 / .06);
+  transition: transform .3s var(--spring-snappy);
+}
+.glass-range:active::-webkit-slider-thumb { transform: scale(1.15); }
+.glass-range::-moz-range-track { height: 6px; border-radius: 3px; background: var(--fill); }
+.glass-range::-moz-range-progress { height: 6px; border-radius: 3px; background: var(--accent); }
+.glass-range::-moz-range-thumb { width: 28px; height: 28px; border: 0; border-radius: 50%; background: #fff; box-shadow: 0 2px 8px rgb(0 0 0 / .2); }
+
+.glass-preview {
+  position: relative;
+  height: 112px;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background:
+    radial-gradient(circle at 18% 30%, #fff 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 72% 22%, #fff 0 1.2px, transparent 2.2px),
+    radial-gradient(circle at 42% 78%, #fff 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 86% 70%, #F4E9FF 0 1.2px, transparent 2.2px),
+    radial-gradient(120% 140% at 20% 0%, #C9A2FF 0%, #8E4DE8 38%, #4B1E92 75%, #2A0A63 100%);
+}
+.glass-preview::before {
+  content: "LUMA · לוּמָה · LUMA · לוּמָה";
+  position: absolute;
+  inset: auto 0 34px;
+  text-align: center;
+  font: 800 2rem/1 var(--font);
+  color: rgb(255 255 255 / .55);
+  white-space: nowrap;
+}
+.glass-preview-bar {
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  border-radius: var(--r-pill);
+}
+.glass-preview-tab {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 40px;
+  border-radius: var(--r-pill);
+}
+.glass-preview-tab.is-on { background: var(--glass-pill); color: var(--accent); }
+.glass-preview-dot {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+.glass-preview-dot svg { position: relative; z-index: 3; }
+
+/* ---------- Boot: avoid transitions on first paint ---------- */
+:root:not(.is-booted) .dock *, :root:not(.is-booted) .topbar * { transition: none !important; }

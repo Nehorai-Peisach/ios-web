@@ -1,0 +1,129 @@
+/* ==========================================================================
+   LUMA — Liquid Glass material
+   Use ONLY on the controls/navigation layer (bars, floating buttons, sheets,
+   segmented controls, toasts, accessory). Content stays solid.
+   Glass uses ::before (touch glow) and ::after (light-catching rim).
+   ========================================================================== */
+
+.glass {
+  position: relative;
+  isolation: isolate;
+  color: var(--glass-label);
+  background: rgb(var(--glass-fill) / var(--glass-alpha));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat)) brightness(1.04);
+          backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat)) brightness(1.04);
+  box-shadow:
+    inset 0 1px 0 var(--glass-rim),
+    inset 0 -1px 0 var(--glass-rim-lo),
+    inset 0 0 14px var(--glass-glow),
+    var(--glass-shadow);
+}
+
+/* Specular rim: light from the top-left (physical — not mirrored in RTL). */
+.glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: linear-gradient(135deg,
+    var(--glass-edge-a) 0%,
+    var(--glass-edge-b) 32%,
+    var(--glass-edge-c) 62%,
+    var(--glass-edge-d) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask-composite: exclude;
+}
+
+/* Clear: only over rich media (hero, art). Pair with bright, bold glyphs. */
+.glass--clear {
+  --glass-alpha: .08;
+  -webkit-backdrop-filter: blur(4px) saturate(160%) brightness(1.05);
+          backdrop-filter: blur(4px) saturate(160%) brightness(1.05);
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / .45),
+    inset 0 0 10px rgb(255 255 255 / .08),
+    0 6px 20px rgb(0 0 0 / .18);
+}
+.glass--clear.glass--dim { background: rgb(0 0 0 / .35); }
+
+/* Prominent: tinted glass for THE primary action. */
+.glass--prominent {
+  color: var(--on-accent);
+  background: color-mix(in oklab, var(--accent-fill) 90%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / .35),
+    inset 0 -1px 0 rgb(0 0 0 / .08),
+    0 8px 24px color-mix(in oklab, var(--accent-fill) 35%, transparent),
+    0 1px 3px rgb(0 0 0 / .12);
+}
+.glass--prominent::after {
+  background: linear-gradient(135deg, rgb(255 255 255 / .55), rgb(255 255 255 / .05) 40%, rgb(255 255 255 / .02) 65%, rgb(255 255 255 / .3));
+}
+
+/* Large surfaces (sheets) read thicker: more diffusion, deeper shadow. */
+.glass--thick {
+  background: rgb(var(--glass-fill) / min(.94, calc(var(--glass-alpha) + .42)));
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+          backdrop-filter: blur(28px) saturate(190%);
+}
+
+/* ---------- Touch: glass lifts with a glow from the touch point ---------- */
+.glass-press {
+  transition: transform var(--d-bouncy) var(--spring-bouncy);
+  will-change: transform;
+}
+.glass-press::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), var(--glass-press-glow), transparent 70%);
+  opacity: 0;
+  transition: opacity .45s var(--ease-out);
+}
+.glass-press:active:not(:disabled) {
+  transform: scale(1.08);
+  transition: transform 260ms var(--spring-snappy);
+}
+.glass-press:active:not(:disabled)::before { opacity: 1; transition-duration: .08s; }
+.glass-press.glass-press--soft:active:not(:disabled) { transform: scale(1.04); }
+
+/* ---------- Fallbacks & accessibility ---------- */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass, .glass--thick { background: rgb(var(--glass-fill) / .94); }
+  .glass--clear { background: rgb(0 0 0 / .45); }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root { --glass-alpha: .94 !important; }
+  .glass, .glass--thick {
+    -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+  }
+  .glass--clear { background: rgb(0 0 0 / .6); }
+  .glass--thick, .sheet-layer .sheet { background: rgb(var(--glass-fill)) !important; }
+}
+:root[data-transparency="reduce"] { --glass-alpha: .94 !important; }
+:root[data-transparency="reduce"] .glass { -webkit-backdrop-filter: none; backdrop-filter: none; }
+
+@media (prefers-contrast: more) {
+  :root { --glass-alpha: .97 !important; }
+  .glass { box-shadow: 0 0 0 1.5px CanvasText, var(--glass-shadow); }
+  .glass::after { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-press:active:not(:disabled) { transform: none; }
+}
+
+@media (forced-colors: active) {
+  .glass { border: 1px solid CanvasText; }
+}

@@ -1,0 +1,259 @@
+/* ==========================================================================
+   LUMA — design tokens
+   iOS 26/27 semantic colors, type scale, spacing, radii, springs.
+   Theme follows the system; html[data-theme="light"|"dark"] overrides.
+   ========================================================================== */
+
+:root {
+  color-scheme: light dark;
+
+  /* ---------- Brand accent (violet) ---------- */
+  --accent: #7B3FE4;
+  --accent-fill: #7B3FE4;
+  --accent-pressed: #6A30D2;
+  --on-accent: #FFFFFF;
+  --accent-soft: color-mix(in oklab, var(--accent) 14%, transparent);
+  --accent-ring: color-mix(in oklab, var(--accent) 55%, transparent);
+
+  /* ---------- Backgrounds ---------- */
+  --bg: #FFFFFF;
+  --bg-2: #F2F2F7;
+  --bg-3: #FFFFFF;
+  --bg-grouped: #F2F2F7;
+  --bg-grouped-2: #FFFFFF;
+  --bg-elevated: #FFFFFF;
+
+  /* ---------- Labels ---------- */
+  --label: #000000;
+  --label-2: rgb(60 60 67 / .62);
+  --label-3: rgb(60 60 67 / .32);
+  --label-4: rgb(60 60 67 / .18);
+
+  /* ---------- Separators & fills ---------- */
+  --separator: rgb(60 60 67 / .29);
+  --separator-opaque: #C6C6C8;
+  --fill: rgb(120 120 128 / .20);
+  --fill-2: rgb(120 120 128 / .16);
+  --fill-3: rgb(118 118 128 / .12);
+  --fill-4: rgb(116 116 128 / .08);
+
+  /* ---------- System colors ---------- */
+  --green: #34C759;
+  --red: #FF3B30;
+  --orange: #FF9500;
+  --yellow: #FFCC00;
+  --gray: #8E8E93;
+  --gray-2: #AEAEB2;
+  --gray-3: #C7C7CC;
+  --gray-4: #D1D1D6;
+  --gray-5: #E5E5EA;
+  --gray-6: #F2F2F7;
+
+  /* ---------- Surfaces used by components ---------- */
+  --card-bg: #F5F5F7;              /* solid product card */
+  --art-bg: radial-gradient(120% 90% at 30% 15%, #FBF8FF 0%, #F1ECFA 55%, #E9E3F5 100%);
+  --dim: rgb(0 0 0 / .28);         /* sheet backdrop */
+  --shadow-card: 0 1px 2px rgb(0 0 0 / .04), 0 6px 20px rgb(30 10 60 / .06);
+  --shadow-float: 0 10px 40px rgb(20 0 50 / .16), 0 2px 8px rgb(0 0 0 / .08);
+  --applepay-bg: #000000;
+  --applepay-fg: #FFFFFF;
+
+  /* ---------- Liquid Glass material ---------- */
+  --glass-fill: 255 255 255;
+  --glass-alpha: .34;              /* user setting overrides inline on <html> (.18–.85) */
+  --glass-blur: 16px;
+  --glass-sat: 180%;
+  --glass-rim: rgb(255 255 255 / .6);
+  --glass-rim-lo: rgb(255 255 255 / .08);
+  --glass-glow: rgb(255 255 255 / .12);
+  --glass-shadow: 0 8px 28px rgb(0 0 0 / .12), 0 1px 3px rgb(0 0 0 / .08);
+  --glass-edge-a: rgb(255 255 255 / .8);
+  --glass-edge-b: rgb(255 255 255 / .1);
+  --glass-edge-c: rgb(255 255 255 / .05);
+  --glass-edge-d: rgb(255 255 255 / .5);
+  --glass-press-glow: rgb(255 255 255 / .55);
+  --glass-pill: rgb(0 0 0 / .065);    /* selected pill inside glass (fill, not glass) */
+  --glass-label: var(--label);
+  --seg-solid-pill: #FFFFFF;
+
+  /* ---------- Typography ---------- */
+  --font: -apple-system, BlinkMacSystemFont, "Heebo", system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-num: -apple-system, BlinkMacSystemFont, "Heebo", system-ui, sans-serif;
+
+  /* size/line — use as `font: 600 var(--t-headline) var(--font)` */
+  --t-large-title: 2.125rem/2.5625rem;   /* 34/41 */
+  --t-title1: 1.75rem/2.125rem;          /* 28/34 */
+  --t-title2: 1.375rem/1.75rem;          /* 22/28 */
+  --t-title3: 1.25rem/1.5625rem;         /* 20/25 */
+  --t-headline: 1.0625rem/1.375rem;      /* 17/22 */
+  --t-body: 1.0625rem/1.375rem;          /* 17/22 */
+  --t-callout: 1rem/1.3125rem;           /* 16/21 */
+  --t-subhead: .9375rem/1.25rem;         /* 15/20 */
+  --t-footnote: .8125rem/1.125rem;       /* 13/18 */
+  --t-caption1: .75rem/1rem;             /* 12/16 */
+  --t-caption2: .6875rem/.8125rem;       /* 11/13 */
+
+  /* ---------- Spacing (8pt grid) ---------- */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px; --s-5: 20px; --s-6: 24px;
+  --s-8: 32px; --s-10: 40px; --s-12: 48px; --s-16: 64px; --s-20: 80px;
+  --gutter: max(16px, env(safe-area-inset-left), env(safe-area-inset-right));
+  --content-max: 1180px;
+
+  /* ---------- Radii ---------- */
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-card: 26px;
+  --r-tile: 32px;
+  --r-sheet: 38px;
+  --r-pill: 999px;
+
+  /* ---------- Motion ---------- */
+  --spring-smooth: linear(0,.049,.157,.285,.411,.526,.624,.706,.772,.825,.867,.899,.924,.943,.957,.968,.976,.983,.987,.99,.993,.995,.996,.997,1);
+  --spring-snappy: linear(0,.027,.095,.186,.287,.389,.487,.577,.658,.728,.787,.837,.878,.911,.937,.957,.972,.984,.992,.998,1.002,1.004,1.006,1.006,1.006,1.006,1.006,1.005,1.004,1.004,1.003,1.002,1);
+  --spring-bouncy: linear(0,.023,.084,.169,.267,.372,.475,.574,.665,.745,.815,.874,.923,.961,.991,1.013,1.029,1.038,1.044,1.046,1.045,1.043,1.039,1.035,1.03,1.025,1.021,1.016,1.013,1.009,1.006,1.004,1.002,1.001,1,.999,.998,.998,.998,.998,1);
+  --d-smooth: 670ms;
+  --d-snappy: 640ms;
+  --d-bouncy: 730ms;
+  --ease-out: cubic-bezier(.32,.72,0,1);
+  --ease-fallback: cubic-bezier(.32,.72,0,1);
+
+  /* ---------- Shell metrics (app.js keeps these in sync) ---------- */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --topbar-h: 56px;
+  --topbar-space: calc(var(--safe-top) + var(--topbar-h));
+  --tabbar-h: 62px;
+  --tabbar-min-h: 48px;
+  --accessory-h: 52px;
+  --dock-bottom: max(calc(var(--safe-bottom) - 8px), 12px);
+  --tabbar-space: calc(var(--dock-bottom) + var(--tabbar-h) + var(--s-3));
+}
+
+/* Springs need linear(); fall back to the iOS-ish ease-out curve. */
+@supports not (transition-timing-function: linear(0, 1)) {
+  :root {
+    --spring-smooth: var(--ease-fallback);
+    --spring-snappy: var(--ease-fallback);
+    --spring-bouncy: cubic-bezier(.34, 1.4, .64, 1);
+  }
+}
+
+@media (min-width: 430px) {
+  :root { --gutter: max(20px, env(safe-area-inset-left), env(safe-area-inset-right)); }
+}
+@media (min-width: 1068px) {
+  :root {
+    --gutter: 32px;
+    --topbar-h: 72px;
+    --tabbar-space: calc(var(--safe-bottom) + var(--s-8));
+  }
+}
+
+/* ---------- Dark appearance (system) ---------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --accent: #B18CFF;
+    --accent-fill: #7C4DFF;
+    --accent-pressed: #6B3CF0;
+    --bg: #000000;
+    --bg-2: #1C1C1E;
+    --bg-3: #2C2C2E;
+    --bg-grouped: #000000;
+    --bg-grouped-2: #1C1C1E;
+    --bg-elevated: #1C1C1E;
+    --label: #FFFFFF;
+    --label-2: rgb(235 235 245 / .62);
+    --label-3: rgb(235 235 245 / .32);
+    --label-4: rgb(235 235 245 / .18);
+    --separator: rgb(84 84 88 / .6);
+    --separator-opaque: #38383A;
+    --fill: rgb(120 120 128 / .36);
+    --fill-2: rgb(120 120 128 / .32);
+    --fill-3: rgb(118 118 128 / .24);
+    --fill-4: rgb(118 118 128 / .18);
+    --green: #30D158;
+    --red: #FF453A;
+    --orange: #FF9F0A;
+    --yellow: #FFD60A;
+    --gray-2: #636366; --gray-3: #48484A; --gray-4: #3A3A3C; --gray-5: #2C2C2E; --gray-6: #1C1C1E;
+    --card-bg: #1C1C1E;
+    --art-bg: radial-gradient(120% 90% at 30% 15%, #2A2236 0%, #1D1828 55%, #16121F 100%);
+    --dim: rgb(0 0 0 / .45);
+    --shadow-card: 0 1px 2px rgb(0 0 0 / .3);
+    --shadow-float: 0 12px 40px rgb(0 0 0 / .55), 0 2px 8px rgb(0 0 0 / .35);
+    --applepay-bg: #FFFFFF;
+    --applepay-fg: #000000;
+    --glass-fill: 34 32 40;
+    --glass-alpha: .44;
+    --glass-rim: rgb(255 255 255 / .22);
+    --glass-rim-lo: rgb(255 255 255 / .05);
+    --glass-glow: rgb(255 255 255 / .05);
+    --glass-shadow: 0 8px 28px rgb(0 0 0 / .45), 0 1px 3px rgb(0 0 0 / .3);
+    --glass-edge-a: rgb(255 255 255 / .42);
+    --glass-edge-b: rgb(255 255 255 / .06);
+    --glass-edge-c: rgb(255 255 255 / .03);
+    --glass-edge-d: rgb(255 255 255 / .22);
+    --glass-press-glow: rgb(255 255 255 / .22);
+    --glass-pill: rgb(255 255 255 / .12);
+    --seg-solid-pill: #636366;
+  }
+}
+
+/* ---------- Dark appearance (forced) — keep in sync with the block above ---------- */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --accent: #B18CFF;
+  --accent-fill: #7C4DFF;
+  --accent-pressed: #6B3CF0;
+  --bg: #000000;
+  --bg-2: #1C1C1E;
+  --bg-3: #2C2C2E;
+  --bg-grouped: #000000;
+  --bg-grouped-2: #1C1C1E;
+  --bg-elevated: #1C1C1E;
+  --label: #FFFFFF;
+  --label-2: rgb(235 235 245 / .62);
+  --label-3: rgb(235 235 245 / .32);
+  --label-4: rgb(235 235 245 / .18);
+  --separator: rgb(84 84 88 / .6);
+  --separator-opaque: #38383A;
+  --fill: rgb(120 120 128 / .36);
+  --fill-2: rgb(120 120 128 / .32);
+  --fill-3: rgb(118 118 128 / .24);
+  --fill-4: rgb(118 118 128 / .18);
+  --green: #30D158;
+  --red: #FF453A;
+  --orange: #FF9F0A;
+  --yellow: #FFD60A;
+  --gray-2: #636366; --gray-3: #48484A; --gray-4: #3A3A3C; --gray-5: #2C2C2E; --gray-6: #1C1C1E;
+  --card-bg: #1C1C1E;
+  --art-bg: radial-gradient(120% 90% at 30% 15%, #2A2236 0%, #1D1828 55%, #16121F 100%);
+  --dim: rgb(0 0 0 / .45);
+  --shadow-card: 0 1px 2px rgb(0 0 0 / .3);
+  --shadow-float: 0 12px 40px rgb(0 0 0 / .55), 0 2px 8px rgb(0 0 0 / .35);
+  --applepay-bg: #FFFFFF;
+  --applepay-fg: #000000;
+  --glass-fill: 34 32 40;
+  --glass-alpha: .44;
+  --glass-rim: rgb(255 255 255 / .22);
+  --glass-rim-lo: rgb(255 255 255 / .05);
+  --glass-glow: rgb(255 255 255 / .05);
+  --glass-shadow: 0 8px 28px rgb(0 0 0 / .45), 0 1px 3px rgb(0 0 0 / .3);
+  --glass-edge-a: rgb(255 255 255 / .42);
+  --glass-edge-b: rgb(255 255 255 / .06);
+  --glass-edge-c: rgb(255 255 255 / .03);
+  --glass-edge-d: rgb(255 255 255 / .22);
+  --glass-press-glow: rgb(255 255 255 / .22);
+  --glass-pill: rgb(255 255 255 / .12);
+  --seg-solid-pill: #636366;
+}
+:root[data-theme="light"] { color-scheme: light; }
+
+/* ---------- Increased contrast (works for both appearances) ---------- */
+@media (prefers-contrast: more) {
+  :root:root {
+    --label-2: color-mix(in srgb, var(--label) 80%, transparent);
+    --label-3: color-mix(in srgb, var(--label) 58%, transparent);
+    --separator: color-mix(in srgb, var(--label) 45%, transparent);
+  }
+}

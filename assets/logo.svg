@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 77.6 24" width="232" height="72" role="img" aria-label="LUMA">
+  <title>LUMA</title>
+  <polygon points="7,4 17,4 14.2,9 9.8,9" fill="#C9A2FF"/>
+  <polygon points="7,4 9.8,9 2,9" fill="#E6DCFF"/>
+  <polygon points="17,4 22,9 14.2,9" fill="#9B6BF0"/>
+  <polygon points="2,9 9.8,9 12,22.5" fill="#8E4DE8"/>
+  <polygon points="9.8,9 14.2,9 12,22.5" fill="#B18CFF"/>
+  <polygon points="14.2,9 22,9 12,22.5" fill="#5A1FB0"/>
+  <path d="M23.2 .6l.45 1.75 1.75.45-1.75.45-.45 1.75-.45-1.75-1.75-.45 1.75-.45z" fill="#B18CFF"/>
+  <g transform="translate(33 6.6) scale(.115)">
+    <path d="M0 0V100H54M84 0V65A35 35 0 0 0 154 65V0M186 100V0L229 74L272 0V100M300 100L339 0L378 100M314.5 63H363.5" fill="none" stroke="#7B3FE4" stroke-width="10" stroke-linejoin="miter" stroke-miterlimit="2.2"/>
+  </g>
+</svg>
