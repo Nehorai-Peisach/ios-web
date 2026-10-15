@@ -1,5 +1,5 @@
-/* LUMA — Store: Checkout (#/checkout), express-pay sheet, and order success (#/done/:orderId).
-   Demo only — nothing is charged. */
+/* LUMA: Store: Checkout (#/checkout), express-pay sheet, and order success (#/done/:orderId).
+   Demo only: nothing is charged. */
 (() => {
   'use strict';
   const L = window.Luma;
@@ -11,9 +11,9 @@
     pickup: { id: 'pickup', title: 'נקודת איסוף', icon: 'mapPin', days: 4, sub: () => `2–4 ימי עסקים · עד ${L.fmt.deliveryDate(4)}` },
   };
   const PICKUP_POINTS = [
-    { id: 'center', label: 'נקודת איסוף — מרכז העיר' },
-    { id: 'station', label: 'לוקר 24/7 — תחנה מרכזית' },
-    { id: 'mall', label: 'דלפק איסוף — קניון העיר' },
+    { id: 'center', label: 'נקודת איסוף במרכז העיר' },
+    { id: 'station', label: 'לוקר 24/7 בתחנה המרכזית' },
+    { id: 'mall', label: 'דלפק איסוף בקניון העיר' },
   ];
   const EXPRESS = {
     applepay: { label: 'Apple Pay', card: 'Visa •••• 4242' },
@@ -45,7 +45,7 @@
       payment: details.payment,
       paymentLabel: details.paymentLabel,
       installments: details.installments,
-      // Privacy: no email, phone or street address is persisted — only what the success page shows.
+      // Privacy: no email, phone or street address is persisted: only what the success page shows.
       firstName: (details.address?.name || '').trim().split(/\s+/)[0] || '',
       city: details.address?.city || '',
       pickup: details.address?.pickup || '',
@@ -58,7 +58,7 @@
   }
 
   /* =====================================================================
-     Express pay (demo sheet) — also used by the bag's Apple Pay button
+     Express pay (demo sheet): also used by the bag's Apple Pay button
      ===================================================================== */
   function expressPay(kind = 'applepay') {
     if (!L.cart.count()) return;
@@ -79,7 +79,7 @@
       h('dl', { class: 'st-sum xp-sum' },
         h('div', { class: 'st-sum-row is-total' }, h('dt', null, `לתשלום ל־LUMA (${S().itemsText(t.count)})`), h('dd', null, S().priceEl(t.total)))),
       h('div', { class: 'xp-cta' }, confirm),
-      h('p', { class: 'st-fine st-fine--center' }, L.ui.icon('info', { size: 14 }), `הדגמה של ${x.label} — לא יתבצע חיוב אמיתי.`));
+      h('p', { class: 'st-fine st-fine--center' }, L.ui.icon('info', { size: 14 }), `הדגמה של ${x.label}. לא יתבצע חיוב אמיתי.`));
     let timer = 0;
     // Dismissing the sheet (cancel, swipe, Esc, route change) aborts a payment still "processing".
     const sheet = L.ui.sheet({ title: x.label, content, detent: 'medium', cancel: 'ביטול', onClose: () => clearTimeout(timer) });
@@ -151,14 +151,14 @@
 
   const RULES = {
     email: (v) => {
-      if (!v) return 'נא להזין כתובת אימייל — לשם נשלח את אישור ההזמנה';
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return 'כתובת האימייל לא נראית תקינה — למשל name@example.com';
+      if (!v) return 'נא להזין כתובת אימייל. לשם נשלח את אישור ההזמנה';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return 'כתובת האימייל לא נראית תקינה, למשל name@example.com';
       return null;
     },
     phone: (v) => {
-      if (!v) return 'נא להזין מספר טלפון — השליח יתקשר לתאם';
+      if (!v) return 'נא להזין מספר טלפון. השליח יתקשר לתאם';
       const d = normPhone(v);
-      if (!/^0[57]\d{8}$/.test(d) && !/^0[2-9]\d{7}$/.test(d)) return 'מספר הטלפון לא תקין — למשל 050-1234567';
+      if (!/^0[57]\d{8}$/.test(d) && !/^0[2-9]\d{7}$/.test(d)) return 'מספר הטלפון לא תקין, למשל 050-1234567';
       return null;
     },
     name: (v) => {
@@ -169,15 +169,15 @@
     city: (v) => (v ? (v.length < 2 ? 'שם העיר קצר מדי' : null) : 'נא להזין עיר או יישוב'),
     street: (v) => {
       if (!v) return 'נא להזין רחוב ומספר בית';
-      if (!/\d/.test(v)) return 'חסר מספר בית — למשל הרצל 12';
+      if (!/\d/.test(v)) return 'חסר מספר בית, למשל הרצל 12';
       return null;
     },
     pickup: (v) => (v ? null : 'נא לבחור נקודת איסוף'),
     card: (v) => {
       const d = digits(v);
       if (!d) return 'נא להזין מספר כרטיס';
-      if (d.length < 13) return 'מספר הכרטיס קצר מדי — בדקו שהזנתם את כל הספרות';
-      if (!luhn(d)) return 'מספר הכרטיס לא תקין — בדקו את הספרות';
+      if (d.length < 13) return 'מספר הכרטיס קצר מדי. בדקו שהזנתם את כל הספרות';
+      if (!luhn(d)) return 'מספר הכרטיס לא תקין. בדקו את הספרות';
       return null;
     },
     exp: (v) => {
@@ -350,7 +350,7 @@
         F.card.row,
         h('div', { class: 'co-split' }, F.exp.row, F.cvv.row),
         instRow,
-      ], h('span', { class: 'co-demo' }, L.ui.icon('info', { size: 14 }), ' חנות הדגמה — לא יתבצע חיוב אמיתי. אפשר לנסות עם ', h('bdi', { dir: 'ltr' }, '4242 4242 4242 4242'), '.'));
+      ], h('span', { class: 'co-demo' }, L.ui.icon('info', { size: 14 }), ' חנות הדגמה. לא יתבצע חיוב אמיתי. אפשר לנסות עם ', h('bdi', { dir: 'ltr' }, '4242 4242 4242 4242'), '.'));
 
       const giftNote = S().gift.get()
         ? h('p', { class: 'co-gift' }, L.ui.icon('gift', { size: 18 }), 'ההזמנה תגיע באריזת מתנה עם כרטיס ברכה.') : null;
@@ -448,8 +448,8 @@
           mPrice[m].replaceChildren(ship ? S().priceEl(ship) : h('span', { class: 'st-free' }, 'חינם'));
         });
         L.$('.co-free-note', methodSet).textContent = t.freeRemaining > 0
-          ? `עוד ${L.fmt.price(t.freeRemaining)} בסל — והמשלוח עלינו.`
-          : `ההזמנה מעל ${L.fmt.price(L.SHIPPING.freeOver)} — המשלוח חינם בשתי האפשרויות.`;
+          ? `עוד ${L.fmt.price(t.freeRemaining)} בסל, והמשלוח עלינו.`
+          : `ההזמנה מעל ${L.fmt.price(L.SHIPPING.freeOver)}, אז המשלוח חינם בשתי האפשרויות.`;
         const row = (k, v, cls) => h('div', { class: ['st-sum-row', cls] }, h('dt', null, k), h('dd', null, v));
         sumRows.replaceChildren(...[
           row('סכום ביניים', S().priceEl(t.subtotal)),
@@ -598,7 +598,7 @@
         h('div', { class: 'done-ctas' },
           L.ui.button('חזרה לחנות', { variant: 'prominent', size: 'lg', full: true, href: '#/shop' }),
           L.ui.button('לדף הבית', { variant: 'filled', size: 'lg', full: true, href: '#/' })),
-        h('p', { class: 'st-fine st-fine--center' }, L.ui.icon('info', { size: 14 }), 'זו חנות הדגמה — לא בוצע חיוב ולא תישלח חבילה.'));
+        h('p', { class: 'st-fine st-fine--center' }, L.ui.icon('info', { size: 14 }), 'זו חנות הדגמה. לא בוצע חיוב ולא תישלח חבילה.'));
     },
   });
 

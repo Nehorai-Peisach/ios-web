@@ -1,4 +1,4 @@
-/* LUMA — app shell: view registry, hash router, top bar, floating glass tab bar,
+/* LUMA: app shell: view registry, hash router, top bar, floating glass tab bar,
    search, tab-bar accessory, settings, view transitions. Boots on DOMContentLoaded. */
 (() => {
   'use strict';
@@ -267,6 +267,7 @@
     try { history.replaceState(history.state, '', hash); } catch { /* file:// edge cases */ }
     renderedHash = hash;
     if (current) current.query = next;
+    if (current) L.meta?.apply(current.def.name, current.params, next);
     tabLastUpdate();
   }
 
@@ -378,6 +379,7 @@
     // Reset shell chrome for the new view.
     setBack(!!def.back);
     setTitle(resolveTitle(def, next.params, next.query));
+    L.meta?.apply(def.name, next.params, next.query);
     setTopActions(null);
     setAccessory(null);
     setTabBarHidden(!!def.hideTabBar);
@@ -428,7 +430,7 @@
      ===================================================================== */
   function setTitle(text) {
     S.titleText.textContent = text || '';
-    document.title = text ? `${text} · לוּמָה` : 'לוּמָה — חול יהלומים';
+    if (!L.meta) document.title = text ? `${text} · לוּמָה` : 'לוּמָה · חול יהלומים';
   }
   function setBack(show) {
     S.backBtn.hidden = !show;
@@ -656,7 +658,7 @@
         results.replaceChildren(L.ui.empty({
           icon: 'search',
           title: `אין תוצאות עבור „${term}”`,
-          text: 'נסו מילה אחרת, או שם של גוון — למשל „לבנדר” או „חצות”.',
+          text: 'נסו מילה אחרת או שם של גוון, למשל „לבנדר” או „חצות”.',
         }));
         L.ui.announce('אין תוצאות');
         return;
@@ -745,6 +747,7 @@
     buildShell();
     applyGlass(settings.glassAlpha);
     syncThemeColor(settings.theme);
+    L.meta?.injectProducts();
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
     if (!isAppHash(location.hash) || !location.hash || location.hash === '#') {

@@ -1,4 +1,4 @@
-/* LUMA — Home (landing). apple.com-style product storytelling:
+/* LUMA: Home (landing). apple.com-style product storytelling:
    dark sand hero → features → sticky sensory chapter → shades → collection →
    specs & safety → reviews → FAQ → final CTA → fine print. */
 (() => {
@@ -107,7 +107,7 @@
     content.lastChild.style.setProperty('--i', 4);
 
     const foot = h('div', { class: 'h-hero-foot h-in', style: { '--i': 5 } }, hint, picker);
-    const hero = h('section', { class: 'h-hero', 'data-tone': 'hero', 'aria-label': 'לוּמָה — חול יהלומים' },
+    const hero = h('section', { class: 'h-hero', 'data-tone': 'hero', 'aria-label': 'לוּמָה · חול יהלומים' },
       h('div', { class: 'h-hero-scrim', 'aria-hidden': 'true' }), content, foot);
 
     // The hint retires after the first touch on the sand.
@@ -155,7 +155,7 @@
   }
 
   /* =====================================================================
-     3. Sensory chapter — sticky stage, scroll-scrubbed scenes
+     3. Sensory chapter: sticky stage, scroll-scrubbed scenes
      ===================================================================== */
   const STEPS = [
     { id: 'press', title: 'ללחוץ.', text: 'לוחצים, והחול נמס בין האצבעות.' },
@@ -430,7 +430,7 @@
   const FAQ = [
     ['האם החול בטוח לילדים?', 'החול לא רעיל ומתאים מגיל 3, בהשגחה. לא מיועד לאכילה.'],
     ['האם הוא מתייבש?', 'לא. הוא שומר על הרכות שלו. מומלץ לסגור את האריזה אחרי השימוש.'],
-    ['איך מנקים אותו?', 'אוספים פירורים עם גוש חול — הוא מושך אותם אליו. אין לשטוף במים.'],
+    ['איך מנקים אותו?', 'אוספים פירורים עם גוש חול, והוא מושך אותם אליו. אין לשטוף במים.'],
     ['כמה זמן לוקח משלוח?', `2–5 ימי עסקים עד הבית, או לנקודת איסוף. משלוח חינם בקנייה מעל ${L.fmt.price(L.SHIPPING.freeOver)}.`],
     ['אפשר להחזיר?', 'כן, תוך 14 יום מקבלת המוצר, באריזה סגורה.'],
     ['איזה גוון לבחור?', 'אמטיסט הוא הקלאסי. לבנדר רך ובהיר, סגול עמוק עשיר, וחצות הכי דרמטי. ואפשר גם את אוסף ארבעת הגוונים.'],
@@ -554,7 +554,7 @@
     let heroH = state.hero.offsetHeight || window.innerHeight;
     const frame = () => {
       ticking = false;
-      state.updateSense?.(); // reads layout first, then writes — no forced reflow below
+      state.updateSense?.(); // reads layout first, then writes: no forced reflow below
       const y = window.scrollY;
       if (!reduced && y < heroH * 1.1) {
         const k = Math.max(0, y) / heroH;

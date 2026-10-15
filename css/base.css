@@ -1,5 +1,5 @@
 /* ==========================================================================
-   LUMA — base: reset, document, typography utilities, accessibility
+   LUMA: base: reset, document, typography utilities, accessibility
    ========================================================================== */
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -69,7 +69,7 @@ input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; a
 
 ::selection { background: color-mix(in oklab, var(--accent) 28%, transparent); }
 
-/* Focus: 2px accent ring, 2px offset — keyboard only. */
+/* Focus: 2px accent ring, 2px offset: keyboard only. */
 :focus { outline: none; }
 :focus-visible {
   outline: 2px solid var(--accent);

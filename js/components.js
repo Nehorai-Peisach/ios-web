@@ -1,4 +1,4 @@
-/* LUMA — UI components (L.ui.*). Native iOS 26 feel: glass only on controls. */
+/* LUMA: UI components (L.ui.*). Native iOS 26 feel: glass only on controls. */
 (() => {
   'use strict';
   const L = window.Luma;
@@ -466,7 +466,7 @@
           document.documentElement.classList.remove('is-locked');
           if (shell) shell.inert = false;
         }
-        // On navigation the router focuses the new page's title — don't steal it back.
+        // On navigation the router focuses the new page's title: don't steal it back.
         if (reason !== 'route' && prevFocus && document.contains(prevFocus)) prevFocus.focus({ preventScroll: true });
         onClose?.(reason);
       };

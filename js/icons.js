@@ -1,4 +1,4 @@
-/* LUMA — hand-drawn icon set. 24px grid, 1.8 stroke, rounded caps & joins.
+/* LUMA: hand-drawn icon set. 24px grid, 1.8 stroke, rounded caps & joins.
    L.icon(name, {filled, size, label}) → inline SVG markup (currentColor). */
 (() => {
   'use strict';

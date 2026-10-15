@@ -1,4 +1,4 @@
-/* LUMA — core utilities: DOM builder, event bus, storage, formatting. */
+/* LUMA: core utilities: DOM builder, event bus, storage, formatting. */
 (() => {
   'use strict';
   const L = (window.Luma = window.Luma || {});

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   LUMA — design tokens
+   LUMA: design tokens
    iOS 26/27 semantic colors, type scale, spacing, radii, springs.
    Theme follows the system; html[data-theme="light"|"dark"] overrides.
    ========================================================================== */
@@ -80,7 +80,7 @@
   --font: -apple-system, BlinkMacSystemFont, "Heebo", system-ui, "Segoe UI", Roboto, Arial, sans-serif;
   --font-num: -apple-system, BlinkMacSystemFont, "Heebo", system-ui, sans-serif;
 
-  /* size/line — use as `font: 600 var(--t-headline) var(--font)` */
+  /* size/line: use as `font: 600 var(--t-headline) var(--font)` */
   --t-large-title: 2.125rem/2.5625rem;   /* 34/41 */
   --t-title1: 1.75rem/2.125rem;          /* 28/34 */
   --t-title2: 1.375rem/1.75rem;          /* 22/28 */
@@ -199,7 +199,7 @@
   }
 }
 
-/* ---------- Dark appearance (forced) — keep in sync with the block above ---------- */
+/* ---------- Dark appearance (forced): keep in sync with the block above ---------- */
 :root[data-theme="dark"] {
   color-scheme: dark;
   --accent: #B18CFF;

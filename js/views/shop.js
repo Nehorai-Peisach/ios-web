@@ -1,4 +1,4 @@
-/* LUMA — Store: shared helpers (L.store) + Shop view (#/shop).
+/* LUMA: Store: shared helpers (L.store) + Shop view (#/shop).
    shop.js loads first of the store views, so helpers used by product/bag/checkout live here. */
 (() => {
   'use strict';
@@ -70,7 +70,7 @@
     set(v) { L.storage.set(GIFT_KEY, !!v); L.bus.emit('store:change', { gift: !!v }); },
   };
 
-  /** Coupon discount (₪) on an amount — the bag's, or the bag's plus an item about to be added. */
+  /** Coupon discount (₪) on an amount: the bag's, or the bag's plus an item about to be added. */
   const discountOn = (amount) => {
     const c = coupon.get();
     return c ? Math.round((amount * c.pct) / 100) : 0;
@@ -150,7 +150,7 @@
       h('div', { class: 'shop-promo-text' },
         h('span', { class: 'shop-promo-eyebrow' }, L.ui.icon('gift', { size: 16 }), 'קופסת מתנה'),
         h('h2', { class: 'shop-promo-title' }, 'מתנה שנוצצת.'),
-        h('p', { class: 'shop-promo-body' }, '900 ג׳ חול, סט כלים וכרטיס ברכה בכתב יד — באריזה ממותגת.'),
+        h('p', { class: 'shop-promo-body' }, '900 ג׳ חול, סט כלים וכרטיס ברכה בכתב יד, באריזה ממותגת.'),
         h('span', { class: 'shop-promo-cta' }, 'לקופסת המתנה', L.ui.icon('forward', { size: 16 }))),
       art);
   }

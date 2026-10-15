@@ -1,5 +1,5 @@
 /* ==========================================================================
-   LUMA — app shell: top bar, scroll edges, floating tab bar, search,
+   LUMA: app shell: top bar, scroll edges, floating tab bar, search,
    accessory, view container, route transitions, settings.
    ========================================================================== */
 
@@ -311,7 +311,7 @@
 html:has(.view.on-grouped), html:has(.view.on-grouped) body { background: var(--bg-grouped); }
 html:has(.view.on-grouped) { --edge-color: var(--bg-grouped); }
 
-/* Accessory capsule — more opaque than other glass: it carries price text over busy content */
+/* Accessory capsule: more opaque than other glass: it carries price text over busy content */
 .dock-accessory.glass { background: rgb(var(--glass-fill) / max(var(--glass-alpha), .62)); }
 .dock-accessory {
   inset-inline-start: 0;

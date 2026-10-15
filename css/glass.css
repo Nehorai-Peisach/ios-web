@@ -1,5 +1,5 @@
 /* ==========================================================================
-   LUMA — Liquid Glass material
+   LUMA: Liquid Glass material
    Use ONLY on the controls/navigation layer (bars, floating buttons, sheets,
    segmented controls, toasts, accessory). Content stays solid.
    Glass uses ::before (touch glow) and ::after (light-catching rim).
@@ -19,7 +19,7 @@
     var(--glass-shadow);
 }
 
-/* Specular rim: light from the top-left (physical — not mirrored in RTL). */
+/* Specular rim: light from the top-left (physical: not mirrored in RTL). */
 .glass::after {
   content: "";
   position: absolute;

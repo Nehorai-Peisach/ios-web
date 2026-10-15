@@ -11,10 +11,70 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="לוּמָה">
   <meta name="format-detection" content="telephone=no">
-  <meta name="description" content="לוּמָה — חול יהלומים. חול קינטי סגול ומנצנץ, רך בידיים ושקט בראש.">
-  <title>לוּמָה — חול יהלומים</title>
+  <title>לוּמָה · חול יהלומים סגול</title>
+  <meta name="description" content="חול קינטי סגול עם נצנוץ יהלומי. רך בידיים, שקט בראש. ארבעה גוונים, אביזרים ומארזי מתנה, ומשלוח חינם מעל 249 ₪.">
+  <meta name="keywords" content="חול יהלומים, חול קינטי, חול קינטי סגול, חול מנצנץ, חול ASMR, מתנה, לומה, LUMA">
+  <meta name="author" content="LUMA">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://nehorai-peisach.github.io/ios-web/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="לוּמָה">
+  <meta property="og:locale" content="he_IL">
+  <meta property="og:url" content="https://nehorai-peisach.github.io/ios-web/">
+  <meta property="og:title" content="יהלומים שאפשר לגעת בהם · לוּמָה">
+  <meta property="og:description" content="חול קינטי סגול עם נצנוץ יהלומי. רך בידיים, שקט בראש. ארבעה גוונים, אביזרים ומארזי מתנה.">
+  <meta property="og:image" content="https://nehorai-peisach.github.io/ios-web/assets/og-image.jpg">
+  <meta property="og:image:secure_url" content="https://nehorai-peisach.github.io/ios-web/assets/og-image.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="שקית חול יהלומים סגול של לוּמָה על רקע חול מנצנץ, עם הכותרת: יהלומים שאפשר לגעת בהם">
+
+  <!-- X / Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="יהלומים שאפשר לגעת בהם · לוּמָה">
+  <meta name="twitter:description" content="חול קינטי סגול עם נצנוץ יהלומי. רך בידיים, שקט בראש.">
+  <meta name="twitter:image" content="https://nehorai-peisach.github.io/ios-web/assets/og-image.jpg">
+  <meta name="twitter:image:alt" content="שקית חול יהלומים סגול של לוּמָה על רקע חול מנצנץ">
+
+  <!-- Icons & app -->
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="assets/favicon.svg">
+  <link rel="icon" href="assets/icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" sizes="180x180">
+  <script>
+    if (location.protocol !== 'file:') document.write('<link rel="manifest" href="site.webmanifest">');
+  </script>
+
+  <!-- Structured data (products are added at runtime from the catalog by js/meta.js) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "OnlineStore",
+        "@id": "https://nehorai-peisach.github.io/ios-web/#store",
+        "name": "לוּמָה",
+        "alternateName": "LUMA",
+        "url": "https://nehorai-peisach.github.io/ios-web/",
+        "logo": "https://nehorai-peisach.github.io/ios-web/assets/icon-512.png",
+        "image": "https://nehorai-peisach.github.io/ios-web/assets/og-image.jpg",
+        "description": "חול קינטי סגול עם נצנוץ יהלומי, אביזרים ומארזי מתנה.",
+        "currenciesAccepted": "ILS",
+        "areaServed": "IL"
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://nehorai-peisach.github.io/ios-web/#website",
+        "name": "לוּמָה · חול יהלומים",
+        "url": "https://nehorai-peisach.github.io/ios-web/",
+        "inLanguage": "he-IL",
+        "publisher": { "@id": "https://nehorai-peisach.github.io/ios-web/#store" }
+      }
+    ]
+  }
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,6 +107,7 @@
   <script defer src="js/cart.js"></script>
   <script defer src="js/art.js"></script>
   <script defer src="js/components.js"></script>
+  <script defer src="js/meta.js"></script>
   <script defer src="js/views/home.js"></script>
   <script defer src="js/views/shop.js"></script>
   <script defer src="js/views/product.js"></script>

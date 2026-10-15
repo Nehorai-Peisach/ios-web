@@ -1,4 +1,4 @@
-/* LUMA — generated visuals: product illustrations (SVG), sand stage (canvas), swatches, logo.
+/* LUMA: generated visuals: product illustrations (SVG), sand stage (canvas), swatches, logo.
    Every product image on the site comes from this file. Deterministic: the same product + shade
    always renders the same glitter. Classic script, attaches to window.Luma.art. */
 (() => {
@@ -130,7 +130,7 @@
     ctx.defs.push(`<clipPath id="${id}"><path d="${d}"${extra}/></clipPath>`);
     return `url(#${id})`;
   }
-  // Fine sand grain (light + dark speckle) — one per art, cached
+  // Fine sand grain (light + dark speckle): one per art, cached
   function grainFilter(ctx) {
     if (ctx.cache.grain) return ctx.cache.grain;
     const id = ctx.id('f');
@@ -191,7 +191,7 @@
     }
     if (o.over) m += o.over;
     // specks: grains in dark/light tones + glitter sparks. Encoded as round-capped zero-length
-    // segments ("M x y h0") — far lighter markup than circles.
+    // segments ("M x y h0"): far lighter markup than circles.
     const area = w * h;
     const k = ctx.k || 1;
     const count = Math.round((area / 70) * (o.density == null ? 1 : o.density) * det.specks * Math.max(0.3, k * k));
@@ -402,7 +402,7 @@
     ctx.defs.push(`<clipPath id="${sandClip}"><path d="${sandD}"/><path d="${top}"/></clipPath>`);
     m += `<rect clip-path="url(#${sandClip})" x="-90" y="${level - 14}" width="180" height="${-level + 14}" fill="${lin(ctx, [[0, '#0b0418', 0.55], [0.1, '#0b0418', 0.12], [0.24, '#0b0418', 0], [0.78, '#0b0418', 0], [0.92, '#0b0418', 0.2], [1, '#0b0418', 0.6]], 0, 0, 1, 0)}"/>`;
     m += `</g>`;
-    // thick glass base — refracted, brighter sand band
+    // thick glass base: refracted, brighter sand band
     m += `<path d="M-89 -14Q-89 -1 -74 -1H74Q89 -1 89 -14V-10H-89Z" fill="${rgba(sh.light, 0.45)}"/>`;
     m += `<path d="M-84 -10.5H84" stroke="${rgba('#ffffff', 0.55)}" stroke-width="1"/>`;
     m += `<path d="M-86 -4H86" stroke="${rgba(sh.glitter, 0.25)}" stroke-width="2.5"/>`;
@@ -878,7 +878,7 @@
   }
 
   /* ================================================================== *
-   *  Sand stage — full-bleed canvas macro of glitter sand
+   *  Sand stage: full-bleed canvas macro of glitter sand
    * ================================================================== */
   function hh(x, y, s) {
     let h = (Math.imul(x | 0, 374761393) + Math.imul(y | 0, 668265263) + Math.imul(s | 0, 982451653)) | 0;

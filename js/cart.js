@@ -1,4 +1,4 @@
-/* LUMA — bag (cart) state. Persisted to localStorage 'luma.cart'; emits 'cart:change'. */
+/* LUMA: bag (cart) state. Persisted to localStorage 'luma.cart'; emits 'cart:change'. */
 (() => {
   'use strict';
   const L = window.Luma;

@@ -1,4 +1,4 @@
-/* LUMA — Store: Bag (#/bag). */
+/* LUMA: Store: Bag (#/bag). */
 (() => {
   'use strict';
   const L = window.Luma;

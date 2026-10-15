@@ -1,5 +1,5 @@
 /* ==========================================================================
-   LUMA — Home (landing). apple.com storytelling; content solid, glass only
+   LUMA: Home (landing). apple.com storytelling; content solid, glass only
    on controls over media. Transform/opacity-only motion.
    ========================================================================== */
 
@@ -143,7 +143,7 @@
 @media (min-width: 1068px) {
   .h-hero { padding-block: calc(var(--topbar-space) + 48px) 40px; }
 }
-/* Darkens the busy glitter behind the type only — the sand stays vivid below. */
+/* Darkens the busy glitter behind the type only: the sand stays vivid below. */
 .h-hero-scrim {
   position: absolute;
   z-index: 0;
@@ -430,7 +430,7 @@
   .h-scene-title { font-size: 4.5rem; }
 }
 
-/* Scene motion — all scrubbed by --t (0 → 1) from the scroll position. */
+/* Scene motion: all scrubbed by --t (0 → 1) from the scroll position. */
 .h-scene svg * { transform-box: view-box; }
 .h-squash { transform-origin: 200px 292px; transform: scale(calc(1 + max(0, var(--t) - .4) * .12), calc(1 - max(0, var(--t) - .4) * .2)); }
 .h-dent { opacity: clamp(0, calc(var(--t) * 1.6 - .5), 1); transform-origin: 200px 172px; transform: scale(calc(.5 + var(--t) * .5)); }
